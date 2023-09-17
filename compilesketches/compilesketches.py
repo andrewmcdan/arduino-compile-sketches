@@ -1090,7 +1090,42 @@ class CompileSketches:
 
         sizes = []
         for memory_type in memory_types:
-            size = {
+            if memory_type["name"] == "flash":
+                # Flash memory usage is reported in the stdout of the compilation process
+                size = {
+                    self.ReportKeys.name: memory_type["name"],
+                    # Set default memory usage value, to be used if memory usage can't be determined
+                    self.ReportKeys.code: self.not_applicable_indicator,
+                    self.ReportKeys.data: self.not_applicable_indicator,
+                    self.ReportKeys.headers: self.not_applicable_indicator,
+                    self.ReportKeys.free_for_files: self.not_applicable_indicator,
+                }
+                if compilation_result.success is True:
+                    size_data = self.get_size_data_from_output(
+                        compilation_output=compilation_result.output,
+                        memory_type=memory_type,
+                        size_data_type=self.ReportKeys.code,
+                    )
+                    self.verbose_print('::warning::Test warning 2: ' + size_data)
+            elif memory_type["name"] == "RAM1":
+                size = {
+                    self.ReportKeys.name: memory_type["name"],
+                    # Set default memory usage value, to be used if memory usage can't be determined
+                    self.ReportKeys.variables: self.not_applicable_indicator,
+                    self.ReportKeys.code: self.not_applicable_indicator,
+                    self.ReportKeys.padding: self.not_applicable_indicator,
+                    self.ReportKeys.free_for_local_variables: self.not_applicable_indicator,
+                }
+            elif memory_type["name"] == "RAM2":
+                size = {
+                    self.ReportKeys.name: memory_type["name"],
+                    # Set default memory usage value, to be used if memory usage can't be determined
+                    self.ReportKeys.variables: self.not_applicable_indicator,
+                    self.ReportKeys.free_for_malloc_new: self.not_applicable_indicator,
+                }
+
+
+            """size = {
                 self.ReportKeys.name: memory_type["name"],
                 # Set default memory usage value, to be used if memory usage can't be determined
                 self.ReportKeys.absolute: self.not_applicable_indicator,
@@ -1104,9 +1139,9 @@ class CompileSketches:
                 self.ReportKeys.padding: self.not_applicable_indicator,
                 self.ReportKeys.free_for_local_variables: self.not_applicable_indicator,
                 self.ReportKeys.free_for_malloc_new: self.not_applicable_indicator,
-            }
+            }"""
 
-            if compilation_result.success is True:
+            """if compilation_result.success is True:
                 # Determine memory usage of the sketch by parsing Arduino CLI's output
                 self.verbose_print('::warning::Test warning 1')
                 size_data = self.get_size_data_from_output(
@@ -1129,7 +1164,7 @@ class CompileSketches:
                         size[self.ReportKeys.relative] = round(
                             (100 * size[self.ReportKeys.code] / size[self.ReportKeys.maximum]),
                             self.relative_size_report_decimal_places,
-                        )
+                        )"""
 
             sizes.append(size)
 
@@ -1145,7 +1180,7 @@ class CompileSketches:
         """
         size_data = None
         regex_match = re.search(pattern=memory_type["regex"][size_data_type], string=compilation_output)
-        #self.verbose_print('::warning::Test warning')
+        self.verbose_print('::warning::Test warning 3')
         #self.verbose_print('::warning::Compilation output - ' + compilation_output)
         if regex_match:
             size_data = int(regex_match.group(1))
