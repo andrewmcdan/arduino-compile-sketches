@@ -1195,7 +1195,7 @@ class CompileSketches:
         """
         size_data = None
         regex_match = re.search(pattern=memory_type["regex"][size_data_type], string=compilation_output)
-        self.verbose_print('::warning::Test warning 3')
+        #self.verbose_print('::warning::Test warning 3')
         #self.verbose_print('::warning::Compilation output - ' + compilation_output)
         if regex_match:
             size_data = int(regex_match.group(1))
@@ -1216,7 +1216,6 @@ class CompileSketches:
                 + memory_type["name"]
                 + "\". The board's platform may not have been configured to provide this information."
             )
-
         return size_data
 
     def get_warning_count_from_output(self, compilation_result):
@@ -1317,6 +1316,10 @@ class CompileSketches:
                 self.ReportKeys.free_for_malloc_new: current_size[self.ReportKeys.free_for_malloc_new],
             },
         }
+
+        self.verbose_print("size_report: " + str(size_report))
+        self.verbose_print("current_size: " + str(current_size))
+        self.verbose_print("previous_size: " + str(previous_size))
 
         if previous_size is not None:
             # Calculate the memory usage change
