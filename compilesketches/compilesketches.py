@@ -1143,6 +1143,7 @@ class CompileSketches:
         """
         size_data = None
         regex_match = re.search(pattern=memory_type["regex"][size_data_type], string=compilation_output)
+        self.verbose_print('::warning::Test warning')
         self.verbose_print('::warning::Compilation output - ')
         if regex_match:
             size_data = int(regex_match.group(1))
