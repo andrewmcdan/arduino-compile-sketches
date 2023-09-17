@@ -1182,7 +1182,7 @@ class CompileSketches:
 
                         size[self.ReportKeys.free_for_malloc_new] = size_data
             sizes.append(size)
-
+        self.verbose_print(str(sizes))
         return sizes
 
     def get_size_data_from_output(self, compilation_output, memory_type, size_data_type):
