@@ -1303,23 +1303,25 @@ class CompileSketches:
             },
         }"""
 
+       
+        self.verbose_print("current_size: " + str(current_size))
+        self.verbose_print("previous_size: " + str(previous_size))
         size_report = {
             self.ReportKeys.name: current_size[self.ReportKeys.name],
             self.ReportKeys.current: {
                 self.ReportKeys.code: current_size[self.ReportKeys.code],
                 self.ReportKeys.data: current_size[self.ReportKeys.data],
                 self.ReportKeys.headers: current_size[self.ReportKeys.headers],
-                self.ReportKeys.free_for_files: current_size[self.ReportKeys.free_for_files],
-                self.ReportKeys.variables: current_size[self.ReportKeys.variables],
-                self.ReportKeys.padding: current_size[self.ReportKeys.padding],
-                self.ReportKeys.free_for_local_variables: current_size[self.ReportKeys.free_for_local_variables],
-                self.ReportKeys.free_for_malloc_new: current_size[self.ReportKeys.free_for_malloc_new],
+                # self.ReportKeys.free_for_files: current_size[self.ReportKeys.free_for_files],
+                # self.ReportKeys.variables: current_size[self.ReportKeys.variables],
+                # self.ReportKeys.padding: current_size[self.ReportKeys.padding],
+                # self.ReportKeys.free_for_local_variables: current_size[self.ReportKeys.free_for_local_variables],
+                # self.ReportKeys.free_for_malloc_new: current_size[self.ReportKeys.free_for_malloc_new],
             },
         }
-
+        
         self.verbose_print("size_report: " + str(size_report))
-        self.verbose_print("current_size: " + str(current_size))
-        self.verbose_print("previous_size: " + str(previous_size))
+        
 
         if previous_size is not None:
             # Calculate the memory usage change
