@@ -1113,7 +1113,7 @@ class CompileSketches:
                         memory_type=memory_type,
                         size_data_type=self.ReportKeys.code,
                     )
-                    self.verbose_print('::warning::Test warning 2: ' + size_data)
+                    self.verbose_print('::warning::Test warning 2: ' + str(size_data))
                     if size_data:
                         size[self.ReportKeys.code] = size_data
 
@@ -1124,6 +1124,22 @@ class CompileSketches:
                         )
 
                         size[self.ReportKeys.data] = size_data
+
+                        size_data = self.get_size_data_from_output(
+                            compilation_output=compilation_result.output,
+                            memory_type=memory_type,
+                            size_data_type=self.ReportKeys.headers,
+                        )
+
+                        size[self.ReportKeys.headers] = size_data
+
+                        size_data = self.get_size_data_from_output(
+                            compilation_output=compilation_result.output,
+                            memory_type=memory_type,
+                            size_data_type=self.ReportKeys.free_for_files,
+                        )
+
+                        size[self.ReportKeys.free_for_files] = size_data
             elif memory_type["name"] == "RAM1":
                 size = {
                     self.ReportKeys.name: memory_type["name"],
