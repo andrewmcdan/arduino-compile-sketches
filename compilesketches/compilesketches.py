@@ -1108,11 +1108,13 @@ class CompileSketches:
 
             if compilation_result.success is True:
                 # Determine memory usage of the sketch by parsing Arduino CLI's output
+                self.verbose_print('::warning::Test warning 1')
                 size_data = self.get_size_data_from_output(
                     compilation_output=compilation_result.output,
                     memory_type=memory_type,
                     size_data_type=self.ReportKeys.code,
                 )
+                self.verbose_print('::warning::Test warning 2: ' + size_data)
                 if size_data:
                     size[self.ReportKeys.code] = size_data
 
@@ -1143,8 +1145,8 @@ class CompileSketches:
         """
         size_data = None
         regex_match = re.search(pattern=memory_type["regex"][size_data_type], string=compilation_output)
-        self.verbose_print('::warning::Test warning')
-        self.verbose_print('::warning::Compilation output - ' + compilation_output)
+        #self.verbose_print('::warning::Test warning')
+        #self.verbose_print('::warning::Compilation output - ' + compilation_output)
         if regex_match:
             size_data = int(regex_match.group(1))
         else:
