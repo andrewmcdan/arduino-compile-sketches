@@ -1,3 +1,10 @@
+'''
+To push commits to the V1.1 tag:
+commit changes to main
+git tag -f v1.1
+git push origin HEAD
+git push origin -f v1.1
+'''
 import atexit
 import time
 import contextlib
@@ -1107,6 +1114,16 @@ class CompileSketches:
                         size_data_type=self.ReportKeys.code,
                     )
                     self.verbose_print('::warning::Test warning 2: ' + size_data)
+                    if size_data:
+                        size[self.ReportKeys.code] = size_data
+
+                        size_data = self.get_size_data_from_output(
+                            compilation_output=compilation_result.output,
+                            memory_type=memory_type,
+                            size_data_type=self.ReportKeys.data,
+                        )
+
+                        size[self.ReportKeys.data] = size_data
             elif memory_type["name"] == "RAM1":
                 size = {
                     self.ReportKeys.name: memory_type["name"],
