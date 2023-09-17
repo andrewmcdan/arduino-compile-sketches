@@ -1071,29 +1071,6 @@ class CompileSketches:
                 },
             },
         ]
-        """memory_types = [
-            {
-                "name": "flash",
-                # Use capturing parentheses to identify the location of the data in the regular expression
-                "regex": {
-                    # The regular expression for the absolute memory usage
-                    self.ReportKeys.absolute: r"Sketch uses ([0-9]+) bytes .*of program storage space\.",
-                    # The regular expression for the total memory
-                    self.ReportKeys.maximum: (
-                        r"Sketch uses [0-9]+ bytes .*of program storage space\. Maximum is ([0-9]+) bytes."
-                    ),
-                },
-            },
-            {
-                "name": "RAM for global variables",
-                "regex": {
-                    self.ReportKeys.absolute: r"Global variables use ([0-9]+) bytes .*of dynamic memory",
-                    self.ReportKeys.maximum: (
-                        r"Global variables use [0-9]+ bytes .*of dynamic memory.*\. Maximum is ([0-9]+) bytes."
-                    ),
-                },
-            },
-        ]"""
 
         sizes = []
         for memory_type in memory_types:
@@ -1149,6 +1126,38 @@ class CompileSketches:
                     self.ReportKeys.padding: self.not_applicable_indicator,
                     self.ReportKeys.free_for_local_variables: self.not_applicable_indicator,
                 }
+                if compilation_result.success is True:
+                    size_data = self.get_size_data_from_output(
+                        compilation_output=compilation_result.output,
+                        memory_type=memory_type,
+                        size_data_type=self.ReportKeys.variables,
+                    )
+                    if size_data:
+                        size[self.ReportKeys.variables] = size_data
+
+                        size_data = self.get_size_data_from_output(
+                            compilation_output=compilation_result.output,
+                            memory_type=memory_type,
+                            size_data_type=self.ReportKeys.code,
+                        )
+
+                        size[self.ReportKeys.code] = size_data
+
+                        size_data = self.get_size_data_from_output(
+                            compilation_output=compilation_result.output,
+                            memory_type=memory_type,
+                            size_data_type=self.ReportKeys.padding,
+                        )
+
+                        size[self.ReportKeys.padding] = size_data
+
+                        size_data = self.get_size_data_from_output(
+                            compilation_output=compilation_result.output,
+                            memory_type=memory_type,
+                            size_data_type=self.ReportKeys.free_for_local_variables,
+                        )
+
+                        size[self.ReportKeys.free_for_local_variables] = size_data
             elif memory_type["name"] == "RAM2":
                 size = {
                     self.ReportKeys.name: memory_type["name"],
@@ -1156,49 +1165,22 @@ class CompileSketches:
                     self.ReportKeys.variables: self.not_applicable_indicator,
                     self.ReportKeys.free_for_malloc_new: self.not_applicable_indicator,
                 }
-
-
-            """size = {
-                self.ReportKeys.name: memory_type["name"],
-                # Set default memory usage value, to be used if memory usage can't be determined
-                self.ReportKeys.absolute: self.not_applicable_indicator,
-                self.ReportKeys.maximum: self.not_applicable_indicator,
-                self.ReportKeys.relative: self.not_applicable_indicator,
-                self.ReportKeys.code: self.not_applicable_indicator,
-                self.ReportKeys.data: self.not_applicable_indicator,
-                self.ReportKeys.headers: self.not_applicable_indicator,
-                self.ReportKeys.free_for_files: self.not_applicable_indicator,
-                self.ReportKeys.variables: self.not_applicable_indicator,
-                self.ReportKeys.padding: self.not_applicable_indicator,
-                self.ReportKeys.free_for_local_variables: self.not_applicable_indicator,
-                self.ReportKeys.free_for_malloc_new: self.not_applicable_indicator,
-            }"""
-
-            """if compilation_result.success is True:
-                # Determine memory usage of the sketch by parsing Arduino CLI's output
-                self.verbose_print('::warning::Test warning 1')
-                size_data = self.get_size_data_from_output(
-                    compilation_output=compilation_result.output,
-                    memory_type=memory_type,
-                    size_data_type=self.ReportKeys.code,
-                )
-                self.verbose_print('::warning::Test warning 2: ' + size_data)
-                if size_data:
-                    size[self.ReportKeys.code] = size_data
-
+                if compilation_result.success is True:
                     size_data = self.get_size_data_from_output(
                         compilation_output=compilation_result.output,
                         memory_type=memory_type,
-                        size_data_type=self.ReportKeys.maximum,
+                        size_data_type=self.ReportKeys.variables,
                     )
                     if size_data:
-                        size[self.ReportKeys.maximum] = size_data
+                        size[self.ReportKeys.variables] = size_data
 
-                        size[self.ReportKeys.relative] = round(
-                            (100 * size[self.ReportKeys.code] / size[self.ReportKeys.maximum]),
-                            self.relative_size_report_decimal_places,
-                        )"""
+                        size_data = self.get_size_data_from_output(
+                            compilation_output=compilation_result.output,
+                            memory_type=memory_type,
+                            size_data_type=self.ReportKeys.free_for_malloc_new,
+                        )
 
+                        size[self.ReportKeys.free_for_malloc_new] = size_data
             sizes.append(size)
 
         return sizes
@@ -1313,12 +1295,26 @@ class CompileSketches:
         previous_size -- data from the compilation of the sketch at the pull request's base ref, or None if the size
                          deltas feature is not enabled
         """
-        size_report = {
+        """size_report = {
             self.ReportKeys.name: current_size[self.ReportKeys.name],
             self.ReportKeys.maximum: current_size[self.ReportKeys.maximum],
             self.ReportKeys.current: {
                 self.ReportKeys.absolute: current_size[self.ReportKeys.absolute],
                 self.ReportKeys.relative: current_size[self.ReportKeys.relative],
+            },
+        }"""
+
+        size_report = {
+            self.ReportKeys.name: current_size[self.ReportKeys.name],
+            self.ReportKeys.current: {
+                self.ReportKeys.code: current_size[self.ReportKeys.code],
+                self.ReportKeys.data: current_size[self.ReportKeys.data],
+                self.ReportKeys.headers: current_size[self.ReportKeys.headers],
+                self.ReportKeys.free_for_files: current_size[self.ReportKeys.free_for_files],
+                self.ReportKeys.variables: current_size[self.ReportKeys.variables],
+                self.ReportKeys.padding: current_size[self.ReportKeys.padding],
+                self.ReportKeys.free_for_local_variables: current_size[self.ReportKeys.free_for_local_variables],
+                self.ReportKeys.free_for_malloc_new: current_size[self.ReportKeys.free_for_malloc_new],
             },
         }
 
