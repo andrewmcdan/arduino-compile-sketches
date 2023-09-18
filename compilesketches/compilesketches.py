@@ -1531,6 +1531,9 @@ class CompileSketches:
     def get_sizes_summary_report(self, sketch_report_list):
         """Return the list containing a summary of size data for all sketch compilations for each memory type.
 
+        ############## Rewritten to support Teensy Compiler output ##############
+        ############## NOT DONE YET ##############
+
         Keyword arguments:
         sketch_report_list -- list of reports from each sketch compilation
         """
@@ -1538,7 +1541,7 @@ class CompileSketches:
         for sketch_report in sketch_report_list:
             for size_report in sketch_report[self.ReportKeys.sizes]:
                 # Determine the sizes_summary_report index for this memory type
-                self.verbose_print("::warning::size_report: " + str(size_report))
+                #self.verbose_print("::warning::size_report: " + str(size_report))
                 size_summary_report_index_list = [
                     index
                     for index, size_summary in enumerate(sizes_summary_report)
