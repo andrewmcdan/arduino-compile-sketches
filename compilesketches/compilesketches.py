@@ -1293,72 +1293,177 @@ class CompileSketches:
         current_size -- data from the compilation of the sketch at the pull request's head ref
         previous_size -- data from the compilation of the sketch at the pull request's base ref, or None if the size
                          deltas feature is not enabled
-        """
-        """size_report = {
-            self.ReportKeys.name: current_size[self.ReportKeys.name],
-            self.ReportKeys.maximum: current_size[self.ReportKeys.maximum],
-            self.ReportKeys.current: {
-                self.ReportKeys.absolute: current_size[self.ReportKeys.absolute],
-                self.ReportKeys.relative: current_size[self.ReportKeys.relative],
-            },
-        }"""
-
-       
+        """       
         self.verbose_print("current_size: " + str(current_size))
         self.verbose_print("previous_size: " + str(previous_size))
-        size_report = {
-            self.ReportKeys.name: current_size[self.ReportKeys.name],
-            self.ReportKeys.current: {
-                self.ReportKeys.code: current_size[self.ReportKeys.code],
-                self.ReportKeys.data: current_size[self.ReportKeys.data],
-                self.ReportKeys.headers: current_size[self.ReportKeys.headers],
-                # self.ReportKeys.free_for_files: current_size[self.ReportKeys.free_for_files],
-                # self.ReportKeys.variables: current_size[self.ReportKeys.variables],
-                # self.ReportKeys.padding: current_size[self.ReportKeys.padding],
-                # self.ReportKeys.free_for_local_variables: current_size[self.ReportKeys.free_for_local_variables],
-                # self.ReportKeys.free_for_malloc_new: current_size[self.ReportKeys.free_for_malloc_new],
-            },
-        }
+        if current_size[self.ReportKeys.name] == "flash":
+            size_report = {
+                self.ReportKeys.name: current_size[self.ReportKeys.name],
+                self.ReportKeys.current: {
+                    self.ReportKeys.code: current_size[self.ReportKeys.code],
+                    self.ReportKeys.data: current_size[self.ReportKeys.data],
+                    self.ReportKeys.headers: current_size[self.ReportKeys.headers],
+                    self.ReportKeys.free_for_files: current_size[self.ReportKeys.free_for_files],
+                },
+            }
+        elif current_size[self.ReportKeys.name] == "RAM1":
+            size_report = {
+                self.ReportKeys.name: current_size[self.ReportKeys.name],
+                self.ReportKeys.current: {
+                    self.ReportKeys.variables: current_size[self.ReportKeys.variables],
+                    self.ReportKeys.code: current_size[self.ReportKeys.code],
+                    self.ReportKeys.padding: current_size[self.ReportKeys.padding],
+                    self.ReportKeys.free_for_local_variables: current_size[self.ReportKeys.free_for_local_variables],
+                },
+            }
+        elif current_size[self.ReportKeys.name] == "RAM2":
+            size_report = {
+                self.ReportKeys.name: current_size[self.ReportKeys.name],
+                self.ReportKeys.current: {
+                    self.ReportKeys.variables: current_size[self.ReportKeys.variables],
+                    self.ReportKeys.free_for_malloc_new: current_size[self.ReportKeys.free_for_malloc_new],
+                },
+            }
         
         self.verbose_print("size_report: " + str(size_report))
-        
 
-        if previous_size is not None:
+        if previous_size is not None and current_size[self.ReportKeys.name] == "flash":
             # Calculate the memory usage change
             if (
-                current_size[self.ReportKeys.absolute] == self.not_applicable_indicator
-                or previous_size[self.ReportKeys.absolute] == self.not_applicable_indicator
+                current_size[self.ReportKeys.code] == self.not_applicable_indicator
+                or previous_size[self.ReportKeys.code] == self.not_applicable_indicator
             ):
-                absolute_delta = self.not_applicable_indicator
+                code_delta = self.not_applicable_indicator
             else:
-                absolute_delta = current_size[self.ReportKeys.absolute] - previous_size[self.ReportKeys.absolute]
+                code_delta = current_size[self.ReportKeys.code] - previous_size[self.ReportKeys.code]
 
             if (
-                absolute_delta == self.not_applicable_indicator
-                or size_report[self.ReportKeys.maximum] == self.not_applicable_indicator
+                current_size[self.ReportKeys.data] == self.not_applicable_indicator
+                or previous_size[self.ReportKeys.data] == self.not_applicable_indicator
             ):
-                relative_delta = self.not_applicable_indicator
+                data_delta = self.not_applicable_indicator
             else:
-                # Calculate from absolute values to avoid rounding errors
-                relative_delta = round(
-                    (100 * absolute_delta / size_report[self.ReportKeys.maximum]),
-                    self.relative_size_report_decimal_places,
-                )
+                data_delta = current_size[self.ReportKeys.data] - previous_size[self.ReportKeys.data]
+            
+            if (
+                current_size[self.ReportKeys.headers] == self.not_applicable_indicator
+                or previous_size[self.ReportKeys.headers] == self.not_applicable_indicator
+            ):
+                headers_delta = self.not_applicable_indicator
+            else:
+                headers_delta = current_size[self.ReportKeys.headers] - previous_size[self.ReportKeys.headers]
+
+            if (
+                current_size[self.ReportKeys.free_for_files] == self.not_applicable_indicator
+                or previous_size[self.ReportKeys.free_for_files] == self.not_applicable_indicator
+            ):
+                free_for_files_delta = self.not_applicable_indicator
+            else:
+                free_for_files_delta = current_size[self.ReportKeys.free_for_files] - previous_size[self.ReportKeys.free_for_files]
+
 
             # Size deltas reports are enabled
             # Print the memory usage change data to the log
-            delta_message = "Change in " + str(current_size[self.ReportKeys.name]) + ": " + str(absolute_delta)
-            if relative_delta != self.not_applicable_indicator:
-                delta_message += " (" + str(relative_delta) + "%)"
+            delta_message = "Change in " + str(current_size[self.ReportKeys.name]) + ": " + self.ReportKeys.code + ": " + str(code_delta) + ", " + self.ReportKeys.data + ": " + str(data_delta) + ", " + self.ReportKeys.headers + ": " + str(headers_delta) + ", " + self.ReportKeys.free_for_files + ": " + str(free_for_files_delta)
+            
             print(delta_message)
 
             size_report[self.ReportKeys.previous] = {
-                self.ReportKeys.absolute: previous_size[self.ReportKeys.absolute],
-                self.ReportKeys.relative: previous_size[self.ReportKeys.relative],
+                self.ReportKeys.code: previous_size[self.ReportKeys.code],
+                self.ReportKeys.data: previous_size[self.ReportKeys.data],
+                self.ReportKeys.headers: previous_size[self.ReportKeys.headers],
+                self.ReportKeys.free_for_files: previous_size[self.ReportKeys.free_for_files],
             }
             size_report[self.ReportKeys.delta] = {
-                self.ReportKeys.absolute: absolute_delta,
-                self.ReportKeys.relative: relative_delta,
+                self.ReportKeys.code: code_delta,
+                self.ReportKeys.data: data_delta,
+                self.ReportKeys.headers: headers_delta,
+                self.ReportKeys.free_for_files: free_for_files_delta,
+            }
+        elif previous_size is not None and current_size[self.ReportKeys.name] == "RAM1":
+            # Calculate the memory usage change
+            if (
+                current_size[self.ReportKeys.variables] == self.not_applicable_indicator
+                or previous_size[self.ReportKeys.variables] == self.not_applicable_indicator
+            ):
+                variables_delta = self.not_applicable_indicator
+            else:
+                variables_delta = current_size[self.ReportKeys.variables] - previous_size[self.ReportKeys.variables]
+
+            if (
+                current_size[self.ReportKeys.code] == self.not_applicable_indicator
+                or previous_size[self.ReportKeys.code] == self.not_applicable_indicator
+            ):
+                code_delta = self.not_applicable_indicator
+            else:
+                code_delta = current_size[self.ReportKeys.code] - previous_size[self.ReportKeys.code]
+
+            if (
+                current_size[self.ReportKeys.padding] == self.not_applicable_indicator
+                or previous_size[self.ReportKeys.padding] == self.not_applicable_indicator
+            ):
+                padding_delta = self.not_applicable_indicator
+            else:
+                padding_delta = current_size[self.ReportKeys.padding] - previous_size[self.ReportKeys.padding]
+
+            if (
+                current_size[self.ReportKeys.free_for_local_variables] == self.not_applicable_indicator
+                or previous_size[self.ReportKeys.free_for_local_variables] == self.not_applicable_indicator
+            ):
+                free_for_local_variables_delta = self.not_applicable_indicator
+            else:
+                free_for_local_variables_delta = current_size[self.ReportKeys.free_for_local_variables] - previous_size[self.ReportKeys.free_for_local_variables]
+
+
+            # Size deltas reports are enabled
+            # Print the memory usage change data to the log
+            delta_message = "Change in " + str(current_size[self.ReportKeys.name]) + ": " + self.ReportKeys.variables + ": " + str(variables_delta) + ", " + self.ReportKeys.code + ": " + str(code_delta) + ", " + self.ReportKeys.padding + ": " + str(padding_delta) + ", " + self.ReportKeys.free_for_local_variables + ": " + str(free_for_local_variables_delta)
+            
+            print(delta_message)
+
+            size_report[self.ReportKeys.previous] = {
+                self.ReportKeys.variables: previous_size[self.ReportKeys.variables],
+                self.ReportKeys.code: previous_size[self.ReportKeys.code],
+                self.ReportKeys.padding: previous_size[self.ReportKeys.padding],
+                self.ReportKeys.free_for_local_variables: previous_size[self.ReportKeys.free_for_local_variables],
+            }
+            size_report[self.ReportKeys.delta] = {
+                self.ReportKeys.variables: variables_delta,
+                self.ReportKeys.code: code_delta,
+                self.ReportKeys.padding: padding_delta,
+                self.ReportKeys.free_for_local_variables: free_for_local_variables_delta,
+            }
+        elif previous_size is not None and current_size[self.ReportKeys.name] == "RAM2":
+            # Calculate the memory usage change
+            if (
+                current_size[self.ReportKeys.variables] == self.not_applicable_indicator
+                or previous_size[self.ReportKeys.variables] == self.not_applicable_indicator
+            ):
+                variables_delta = self.not_applicable_indicator
+            else:
+                variables_delta = current_size[self.ReportKeys.variables] - previous_size[self.ReportKeys.variables]
+
+            if (
+                current_size[self.ReportKeys.free_for_malloc_new] == self.not_applicable_indicator
+                or previous_size[self.ReportKeys.free_for_malloc_new] == self.not_applicable_indicator
+            ):
+                free_for_malloc_new_delta = self.not_applicable_indicator
+            else:
+                free_for_malloc_new_delta = current_size[self.ReportKeys.free_for_malloc_new] - previous_size[self.ReportKeys.free_for_malloc_new]
+
+            # Size deltas reports are enabled
+            # Print the memory usage change data to the log
+            delta_message = "Change in " + str(current_size[self.ReportKeys.name]) + ": " + self.ReportKeys.variables + ": " + str(variables_delta) + ", " + self.ReportKeys.free_for_malloc_new + ": " + str(free_for_malloc_new_delta)
+            
+            print(delta_message)
+
+            size_report[self.ReportKeys.previous] = {
+                self.ReportKeys.variables: previous_size[self.ReportKeys.variables],
+                self.ReportKeys.free_for_malloc_new: previous_size[self.ReportKeys.free_for_malloc_new],
+            }
+            size_report[self.ReportKeys.delta] = {
+                self.ReportKeys.variables: variables_delta,
+                self.ReportKeys.free_for_malloc_new: free_for_malloc_new_delta,
             }
 
         return size_report
