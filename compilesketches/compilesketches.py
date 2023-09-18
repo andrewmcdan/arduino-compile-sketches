@@ -108,6 +108,7 @@ class CompileSketches:
     board_manager_platforms_path = arduino_cli_data_directory_path.joinpath("packages")
 
     class ReportKeys:
+        ############## Rewritten to support Teensy Compiler output ##############
         boards = "boards"
         board = "board"
         commit_hash = "commit_hash"
@@ -1027,6 +1028,8 @@ class CompileSketches:
     def get_sizes_from_output(self, compilation_result):
         """Parse the stdout from the compilation process and return a list containing memory usage data.
 
+        ############## Rewritten to support Teensy Compiler output ##############
+
         Keyword arguments:
         compilation_result -- object returned by compile_sketch()
 
@@ -1289,6 +1292,8 @@ class CompileSketches:
     def get_size_report(self, current_size, previous_size):
         """Return a list of the combined current and previous size data, with deltas.
 
+        ############## Rewritten to support Teensy Compiler output ##############
+
         Keyword arguments:
         current_size -- data from the compilation of the sketch at the pull request's head ref
         previous_size -- data from the compilation of the sketch at the pull request's base ref, or None if the size
@@ -1324,9 +1329,6 @@ class CompileSketches:
                     self.ReportKeys.free_for_malloc_new: current_size[self.ReportKeys.free_for_malloc_new],
                 },
             }
-        
-        self.verbose_print("size_report: " + str(size_report))
-
         if previous_size is not None and current_size[self.ReportKeys.name] == "flash":
             # Calculate the memory usage change
             if (
@@ -1465,7 +1467,7 @@ class CompileSketches:
                 self.ReportKeys.variables: variables_delta,
                 self.ReportKeys.free_for_malloc_new: free_for_malloc_new_delta,
             }
-
+        self.verbose_print("size_report: " + str(size_report))
         return size_report
 
     def get_warnings_report(self, current_warnings, previous_warnings):
