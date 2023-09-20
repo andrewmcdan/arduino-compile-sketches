@@ -1095,7 +1095,7 @@ class CompileSketches:
                         memory_type=memory_type,
                         size_data_type=self.ReportKeys.code,
                     )
-                    self.verbose_print("::warning::@" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + ": " + str(size_data))
+                    #self.verbose_print("::warning::@" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + ": " + str(size_data))
                     if size_data:
                         size[self.ReportKeys.code] = size_data
 
@@ -1301,8 +1301,8 @@ class CompileSketches:
         previous_size -- data from the compilation of the sketch at the pull request's base ref, or None if the size
                          deltas feature is not enabled
         """       
-        self.verbose_print("::warning::@" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + ": " + "current_size: " + str(current_size))
-        self.verbose_print("::warning::@" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + ": " + "previous_size: " + str(previous_size))
+        #self.verbose_print("::warning::@" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + ": " + "current_size: " + str(current_size))
+        #self.verbose_print("::warning::@" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + ": " + "previous_size: " + str(previous_size))
         if current_size[self.ReportKeys.name] == "flash":
             size_report = {
                 self.ReportKeys.name: current_size[self.ReportKeys.name],
@@ -1469,7 +1469,7 @@ class CompileSketches:
                 self.ReportKeys.variables: variables_delta,
                 self.ReportKeys.free_for_malloc_new: free_for_malloc_new_delta,
             }
-        self.verbose_print("size_report: " + str(size_report))
+        #self.verbose_print("size_report: " + str(size_report))
         return size_report
 
     def get_warnings_report(self, current_warnings, previous_warnings):
@@ -1557,9 +1557,9 @@ class CompileSketches:
                 else:
                     size_summary_report_index = size_summary_report_index_list[0]
                 
-                self.verbose_print("::warning::size_report @" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + ": " + str(size_report))
-                self.verbose_print("::warning::sizes_summary_report @" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + ": " + str(sizes_summary_report))
-                self.verbose_print("::warning::size_summary_report_index_list @" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + ": " + str(size_summary_report_index_list))
+                #self.verbose_print("::warning::size_report @" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + ": " + str(size_report))
+                #self.verbose_print("::warning::sizes_summary_report @" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + ": " + str(sizes_summary_report))
+                #self.verbose_print("::warning::size_summary_report_index_list @" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + ": " + str(size_summary_report_index_list))
                 
                 if self.ReportKeys.current not in sizes_summary_report[size_summary_report_index]:
                     sizes_summary_report[size_summary_report_index][self.ReportKeys.current] = size_report[self.ReportKeys.current]
@@ -1568,8 +1568,9 @@ class CompileSketches:
                 if self.ReportKeys.delta not in sizes_summary_report[size_summary_report_index]:
                     sizes_summary_report[size_summary_report_index][self.ReportKeys.delta] = size_report[self.ReportKeys.delta]
 
-                self.verbose_print("::warning::sizes_summary_report @" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + ": " + str(sizes_summary_report))
+                #self.verbose_print("::warning::sizes_summary_report @" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + ": " + str(sizes_summary_report))
 
+                ### this section is not needed for Teensy Compiler output since deltas are embedded in each section anyways ###
                 '''if self.ReportKeys.delta in size_report:
                     if (
                         self.ReportKeys.delta not in sizes_summary_report[size_summary_report_index]
