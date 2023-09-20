@@ -1618,6 +1618,11 @@ class CompileSketches:
                                 self.ReportKeys.relative
                             ][self.ReportKeys.maximum] = size_report[self.ReportKeys.delta][self.ReportKeys.relative]'''
         
+        
+        '''
+        The following "warnings" generate build annotations in the GitHub UI. 
+        They output the memory usage data to the log as warnings which in turn generate build annotation in the GitHub UI.
+        '''
         memoryUsageReport = "   Flash: code - "
         memoryUsageReport += str(sizes_summary_report[0][self.ReportKeys.current][self.ReportKeys.code])
         memoryUsageReport += ", data - "
