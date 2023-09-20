@@ -1561,15 +1561,16 @@ class CompileSketches:
                 self.verbose_print("::warning::sizes_summary_report @" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + ": " + str(sizes_summary_report))
                 self.verbose_print("::warning::size_summary_report_index_list @" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + ": " + str(size_summary_report_index_list))
                 
-                
                 if self.ReportKeys.current not in sizes_summary_report[size_summary_report_index]:
                     sizes_summary_report[size_summary_report_index][self.ReportKeys.current] = size_report[self.ReportKeys.current]
                 if self.ReportKeys.previous not in sizes_summary_report[size_summary_report_index]:
                     sizes_summary_report[size_summary_report_index][self.ReportKeys.previous] = size_report[self.ReportKeys.previous]
+                if self.ReportKeys.delta not in sizes_summary_report[size_summary_report_index]:
+                    sizes_summary_report[size_summary_report_index][self.ReportKeys.delta] = size_report[self.ReportKeys.delta]
 
                 self.verbose_print("::warning::sizes_summary_report @" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + ": " + str(sizes_summary_report))
 
-                if self.ReportKeys.delta in size_report:
+                '''if self.ReportKeys.delta in size_report:
                     if (
                         self.ReportKeys.delta not in sizes_summary_report[size_summary_report_index]
                         or sizes_summary_report[size_summary_report_index][self.ReportKeys.delta][
@@ -1614,7 +1615,7 @@ class CompileSketches:
 
                             sizes_summary_report[size_summary_report_index][self.ReportKeys.delta][
                                 self.ReportKeys.relative
-                            ][self.ReportKeys.maximum] = size_report[self.ReportKeys.delta][self.ReportKeys.relative]
+                            ][self.ReportKeys.maximum] = size_report[self.ReportKeys.delta][self.ReportKeys.relative]'''
 
         return sizes_summary_report
 
