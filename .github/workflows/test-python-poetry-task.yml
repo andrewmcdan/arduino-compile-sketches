@@ -98,14 +98,14 @@ jobs:
 
       # codecov/codecov-action only makes the conversion if the `coverage` package is installed in the global runner
       # environment
-      - name: Convert code coverage report to format required by Codecov
-        run: |
-          poetry run \
-            coverage xml \
-              -o "${{ github.workspace }}/${{ env.COVERAGE_DATA_FILENAME }}"
+      #- name: Convert code coverage report to format required by Codecov
+      #  run: |
+      #    poetry run \
+      #      coverage xml \
+      #        -o "${{ github.workspace }}/${{ env.COVERAGE_DATA_FILENAME }}"
 
-      - name: Upload coverage report to Codecov
-        uses: codecov/codecov-action@v3
-        with:
-          fail_ci_if_error: true
-          file: ${{ env.COVERAGE_DATA_FILENAME }}
+      #- name: Upload coverage report to Codecov
+      #  uses: codecov/codecov-action@v3
+      #  with:
+      #    fail_ci_if_error: true
+      #    file: ${{ env.COVERAGE_DATA_FILENAME }}
