@@ -1561,6 +1561,7 @@ class CompileSketches:
                 self.verbose_print("::warning::sizes_summary_report @" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + ": " + str(sizes_summary_report))
                 self.verbose_print("::warning::size_summary_report_index_list @" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + ": " + str(size_summary_report_index_list))
                 
+                
                 if self.ReportKeys.current not in sizes_summary_report[size_summary_report_index]:
                     sizes_summary_report[size_summary_report_index][self.ReportKeys.current] = size_report[self.ReportKeys.current]
                 if self.ReportKeys.previous not in sizes_summary_report[size_summary_report_index]:
