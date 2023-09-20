@@ -1616,7 +1616,7 @@ class CompileSketches:
                             sizes_summary_report[size_summary_report_index][self.ReportKeys.delta][
                                 self.ReportKeys.relative
                             ][self.ReportKeys.maximum] = size_report[self.ReportKeys.delta][self.ReportKeys.relative]'''
-
+        self.verbose_print("::warning::test @" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + ": " + str(sizes_summary_report))
         return sizes_summary_report
 
     def get_warnings_summary_report(self, sketch_report_list):
