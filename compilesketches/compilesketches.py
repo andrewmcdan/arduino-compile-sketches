@@ -1187,7 +1187,7 @@ class CompileSketches:
 
                         size[self.ReportKeys.free_for_malloc_new] = size_data
             sizes.append(size)
-        self.verbose_print("::warning::@" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + ": " + str(sizes))
+        #self.verbose_print("::warning::@" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + ": " + str(sizes))
         return sizes
 
     def get_size_data_from_output(self, compilation_output, memory_type, size_data_type):
@@ -1617,7 +1617,37 @@ class CompileSketches:
                             sizes_summary_report[size_summary_report_index][self.ReportKeys.delta][
                                 self.ReportKeys.relative
                             ][self.ReportKeys.maximum] = size_report[self.ReportKeys.delta][self.ReportKeys.relative]'''
-        self.verbose_print("::warning::test @" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + ": " + str(sizes_summary_report))
+        
+        memoryUsageReport = "\n"
+        memoryUsageReport += "Memory Usage Report:\n"
+        memoryUsageReport += "---------------------\n"
+        memoryUsageReport += "Flash: code - "
+        memoryUsageReport += str(sizes_summary_report[0][self.ReportKeys.current][self.ReportKeys.code])
+        memoryUsageReport += ", data - "
+        memoryUsageReport += str(sizes_summary_report[0][self.ReportKeys.current][self.ReportKeys.data])
+        memoryUsageReport += ", headers - "
+        memoryUsageReport += str(sizes_summary_report[0][self.ReportKeys.current][self.ReportKeys.headers])
+        memoryUsageReport += ", free for files - "
+        memoryUsageReport += str(sizes_summary_report[0][self.ReportKeys.current][self.ReportKeys.free_for_files])
+        memoryUsageReport += "\n"
+        memoryUsageReport += "RAM1: variables - "
+        memoryUsageReport += str(sizes_summary_report[1][self.ReportKeys.current][self.ReportKeys.variables])
+        memoryUsageReport += ", code - "
+        memoryUsageReport += str(sizes_summary_report[1][self.ReportKeys.current][self.ReportKeys.code])
+        memoryUsageReport += ", padding - "
+        memoryUsageReport += str(sizes_summary_report[1][self.ReportKeys.current][self.ReportKeys.padding])
+        memoryUsageReport += ", free for local variables - "
+        memoryUsageReport += str(sizes_summary_report[1][self.ReportKeys.current][self.ReportKeys.free_for_local_variables])
+        memoryUsageReport += "\n"
+        memoryUsageReport += "RAM2: variables - "
+        memoryUsageReport += str(sizes_summary_report[2][self.ReportKeys.current][self.ReportKeys.variables])
+        memoryUsageReport += ", free for malloc/new - "
+        memoryUsageReport += str(sizes_summary_report[2][self.ReportKeys.current][self.ReportKeys.free_for_malloc_new])
+        memoryUsageReport += "\n"
+        memoryUsageReport += "---------------------\n"
+        
+        self.verbose_print("::warning::@" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + memoryUsageReport)
+        
         return sizes_summary_report
 
     def get_warnings_summary_report(self, sketch_report_list):
