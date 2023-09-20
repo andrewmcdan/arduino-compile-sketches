@@ -1561,16 +1561,26 @@ class CompileSketches:
                 self.verbose_print("::warning::sizes_summary_report @" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + ": " + str(sizes_summary_report))
                 self.verbose_print("::warning::size_summary_report_index_list @" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + ": " + str(size_summary_report_index_list))
                 
-                #for report_type in size_report:
+                for report_type in size_report[self.ReportKeys.current]:
+                    if (
+                        report_type not in sizes_summary_report[size_summary_report_index]
+                        or sizes_summary_report[size_summary_report_index][report_type]
+                        == self.not_applicable_indicator
+                    ):
+                        sizes_summary_report[size_summary_report_index][report_type] = size_report[report_type]
+                
+                self.verbose_print("::warning::size_report @" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + ": " + str(size_report))
+                self.verbose_print("::warning::sizes_summary_report @" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + ": " + str(sizes_summary_report))
+                self.verbose_print("::warning::size_summary_report_index_list @" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + ": " + str(size_summary_report_index_list))
 
-                if (
+                '''if (
                     self.ReportKeys.maximum not in sizes_summary_report[size_summary_report_index]
                     or sizes_summary_report[size_summary_report_index][self.ReportKeys.maximum]
                     == self.not_applicable_indicator
                 ):
                     sizes_summary_report[size_summary_report_index][self.ReportKeys.maximum] = size_report[
                         self.ReportKeys.maximum
-                    ]
+                    ]'''
 
                 self.verbose_print("::warning::sizes_summary_report @" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + ": " + str(sizes_summary_report))
 
