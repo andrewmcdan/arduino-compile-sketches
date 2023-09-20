@@ -1618,10 +1618,7 @@ class CompileSketches:
                                 self.ReportKeys.relative
                             ][self.ReportKeys.maximum] = size_report[self.ReportKeys.delta][self.ReportKeys.relative]'''
         
-        memoryUsageReport = "\n"
-        memoryUsageReport += "Memory Usage Report:\n"
-        memoryUsageReport += "---------------------\n"
-        memoryUsageReport += "Flash: code - "
+        memoryUsageReport = "Flash: code - "
         memoryUsageReport += str(sizes_summary_report[0][self.ReportKeys.current][self.ReportKeys.code])
         memoryUsageReport += ", data - "
         memoryUsageReport += str(sizes_summary_report[0][self.ReportKeys.current][self.ReportKeys.data])
@@ -1629,8 +1626,8 @@ class CompileSketches:
         memoryUsageReport += str(sizes_summary_report[0][self.ReportKeys.current][self.ReportKeys.headers])
         memoryUsageReport += ", free for files - "
         memoryUsageReport += str(sizes_summary_report[0][self.ReportKeys.current][self.ReportKeys.free_for_files])
-        memoryUsageReport += "\n"
-        memoryUsageReport += "RAM1: variables - "
+        self.verbose_print("::warning::@" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + memoryUsageReport)
+        memoryUsageReport = "RAM1: variables - "
         memoryUsageReport += str(sizes_summary_report[1][self.ReportKeys.current][self.ReportKeys.variables])
         memoryUsageReport += ", code - "
         memoryUsageReport += str(sizes_summary_report[1][self.ReportKeys.current][self.ReportKeys.code])
@@ -1638,14 +1635,11 @@ class CompileSketches:
         memoryUsageReport += str(sizes_summary_report[1][self.ReportKeys.current][self.ReportKeys.padding])
         memoryUsageReport += ", free for local variables - "
         memoryUsageReport += str(sizes_summary_report[1][self.ReportKeys.current][self.ReportKeys.free_for_local_variables])
-        memoryUsageReport += "\n"
-        memoryUsageReport += "RAM2: variables - "
+        self.verbose_print("::warning::@" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + memoryUsageReport)
+        memoryUsageReport = "RAM2: variables - "
         memoryUsageReport += str(sizes_summary_report[2][self.ReportKeys.current][self.ReportKeys.variables])
         memoryUsageReport += ", free for malloc/new - "
         memoryUsageReport += str(sizes_summary_report[2][self.ReportKeys.current][self.ReportKeys.free_for_malloc_new])
-        memoryUsageReport += "\n"
-        memoryUsageReport += "---------------------\n"
-        
         self.verbose_print("::warning::@" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + memoryUsageReport)
         
         return sizes_summary_report
