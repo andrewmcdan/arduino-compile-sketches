@@ -21,6 +21,8 @@ import tempfile
 import urllib
 import urllib.request
 
+import inspect
+
 import git
 import gitdb.exc
 import github
@@ -1555,7 +1557,8 @@ class CompileSketches:
                 else:
                     size_summary_report_index = size_summary_report_index_list[0]
                 
-                self.verbose_print("::warning::size_report @1558: " + str(size_report))
+                self.verbose_print("::warning::size_report @" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + ": " + str(size_report))
+                self.verbose_print("::warning::sizes_summary_report @" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + ": " + str(sizes_summary_report))
                 for key in size_report[self.ReportKeys.current]:
                     if (
                         key not in sizes_summary_report[size_summary_report_index]
@@ -1563,7 +1566,8 @@ class CompileSketches:
                         == self.not_applicable_indicator
                     ):
                         sizes_summary_report[size_summary_report_index][key] = size_report[self.ReportKeys.current][key]
-                self.verbose_print("::warning::size_report @1566: " + str(size_report))
+                self.verbose_print("::warning::size_report @" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + ": " + str(size_report))
+                self.verbose_print("::warning::sizes_summary_report @" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + ": " + str(sizes_summary_report))
                 if (
                     self.ReportKeys.maximum not in sizes_summary_report[size_summary_report_index]
                     or sizes_summary_report[size_summary_report_index][self.ReportKeys.maximum]
