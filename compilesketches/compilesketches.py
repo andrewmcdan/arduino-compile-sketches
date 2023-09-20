@@ -1559,15 +1559,10 @@ class CompileSketches:
                 
                 self.verbose_print("::warning::size_report @" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + ": " + str(size_report))
                 self.verbose_print("::warning::sizes_summary_report @" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + ": " + str(sizes_summary_report))
-                for key in size_report[self.ReportKeys.current]:
-                    if (
-                        key not in sizes_summary_report[size_summary_report_index]
-                        or sizes_summary_report[size_summary_report_index][key]
-                        == self.not_applicable_indicator
-                    ):
-                        sizes_summary_report[size_summary_report_index][key] = size_report[self.ReportKeys.current][key]
-                self.verbose_print("::warning::size_report @" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + ": " + str(size_report))
-                self.verbose_print("::warning::sizes_summary_report @" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + ": " + str(sizes_summary_report))
+                self.verbose_print("::warning::size_summary_report_index_list @" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + ": " + str(size_summary_report_index_list))
+                
+                #for report_type in size_report:
+
                 if (
                     self.ReportKeys.maximum not in sizes_summary_report[size_summary_report_index]
                     or sizes_summary_report[size_summary_report_index][self.ReportKeys.maximum]
@@ -1576,6 +1571,8 @@ class CompileSketches:
                     sizes_summary_report[size_summary_report_index][self.ReportKeys.maximum] = size_report[
                         self.ReportKeys.maximum
                     ]
+
+                self.verbose_print("::warning::sizes_summary_report @" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + ": " + str(sizes_summary_report))
 
                 if self.ReportKeys.delta in size_report:
                     if (
