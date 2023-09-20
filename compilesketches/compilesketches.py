@@ -1547,13 +1547,23 @@ class CompileSketches:
                     for index, size_summary in enumerate(sizes_summary_report)
                     if size_summary.get(self.ReportKeys.name) == size_report[self.ReportKeys.name]
                 ]
+
                 if not size_summary_report_index_list:
                     # There is no existing entry in the summary list for this memory type, so create one
                     sizes_summary_report.append({self.ReportKeys.name: size_report[self.ReportKeys.name]})
                     size_summary_report_index = len(sizes_summary_report) - 1
                 else:
                     size_summary_report_index = size_summary_report_index_list[0]
-
+                
+                self.verbose_print("::warning::size_report @1558: " + str(size_report))
+                for key in size_report[self.ReportKeys.current]:
+                    if (
+                        key not in sizes_summary_report[size_summary_report_index]
+                        or sizes_summary_report[size_summary_report_index][key]
+                        == self.not_applicable_indicator
+                    ):
+                        sizes_summary_report[size_summary_report_index][key] = size_report[self.ReportKeys.current][key]
+                self.verbose_print("::warning::size_report @1566: " + str(size_report))
                 if (
                     self.ReportKeys.maximum not in sizes_summary_report[size_summary_report_index]
                     or sizes_summary_report[size_summary_report_index][self.ReportKeys.maximum]
