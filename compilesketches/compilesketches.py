@@ -256,9 +256,29 @@ class CompileSketches:
 
         self.create_sketches_report_file(sketches_report=sketches_report)
 
+        self.copy_hex_files_to_artifacts_folder(sketch_report_list=sketch_report_list)
+
         if not all_compilations_successful:
             print("::error::One or more compilations failed")
             sys.exit(1)
+
+    def copy_hex_files_to_artifacts_folder(self, sketch_report_list):
+        """Copy the hex files to the artifacts folder.
+
+        Keyword arguments:
+        sketch_report_list -- list of dictionaries containing the sketch reports
+        """
+        self.verbose_print("Copying hex files to artifacts folder")
+        self.verbose_print("Artifacts folder:", os.environ["GITHUB_WORKSPACE"])
+        self.verbose_print(sketch_report_list)
+        for sketch_report in sketch_report_list:
+            self.verbose_print(sketch_report)
+            hex_file_path = pathlib.Path(sketch_report[self.ReportKeys.code][self.ReportKeys.absolute]["path"])
+            hex_file_name = hex_file_path.name
+            hex_file_destination_path = pathlib.Path(os.environ["GITHUB_WORKSPACE"], hex_file_name)
+            shutil.copy(src=hex_file_path, dst=hex_file_destination_path)
+            self.verbose_print("Copied hex file:", hex_file_path, "to", hex_file_destination_path)
+            self.verbose_print("Hex file size:", hex_file_path.stat().st_size)
 
     def install_arduino_cli(self):
         """Install Arduino CLI."""
