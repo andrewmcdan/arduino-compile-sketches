@@ -273,14 +273,14 @@ class CompileSketches:
         self.verbose_print("Copying hex files to artifacts folder")
         self.verbose_print("Artifacts folder:", os.environ["GITHUB_WORKSPACE"])
         self.verbose_print(sketch_report_list)
+
+        arduino_temp_folder_location = "/tmp/arduino/sketches/"
         for sketch_report in sketch_report_list:
-            self.verbose_print(sketch_report)
-            hex_file_path = pathlib.Path(sketch_report[self.ReportKeys.code][self.ReportKeys.absolute]["path"])
-            hex_file_name = hex_file_path.name
-            hex_file_destination_path = pathlib.Path(os.environ["GITHUB_WORKSPACE"], hex_file_name)
-            shutil.copy(src=hex_file_path, dst=hex_file_destination_path)
-            self.verbose_print("Copied hex file:", hex_file_path, "to", hex_file_destination_path)
-            self.verbose_print("Hex file size:", hex_file_path.stat().st_size)
+            # get a list of directories in the temp folder
+            temp_folder_contents = os.listdir(arduino_temp_folder_location)
+            for folder in temp_folder_contents:
+                self.verbose_print("::warning::Folder:", folder)
+            
 
     def install_arduino_cli(self):
         """Install Arduino CLI."""
