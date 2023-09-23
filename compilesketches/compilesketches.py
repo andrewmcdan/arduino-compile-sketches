@@ -281,8 +281,10 @@ class CompileSketches:
             for folder in temp_folder_contents:
                 self.verbose_print("::warning::Folder:", folder)
                 self.verbose_print("::warning::hex file: " + arduino_temp_folder_location + folder + "/" + sketch_report["name"] + ".ino.hex")
-                # print the contents of the folder
-                self.verbose_print(os.listdir(arduino_temp_folder_location + folder))
+                hex_file_name = arduino_temp_folder_location + folder + "/" + sketch_report["name"] + ".ino.hex"
+                # copy the hex file to the artifacts folder
+                shutil.copy(hex_file_name, os.environ["GITHUB_WORKSPACE"])
+                os.listdir(os.environ["GITHUB_WORKSPACE"])
             
 
     def install_arduino_cli(self):
