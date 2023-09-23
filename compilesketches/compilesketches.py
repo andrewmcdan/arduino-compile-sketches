@@ -280,6 +280,9 @@ class CompileSketches:
             temp_folder_contents = os.listdir(arduino_temp_folder_location)
             for folder in temp_folder_contents:
                 self.verbose_print("::warning::Folder:", folder)
+                self.verbose_print("::warning::hex file: " + arduino_temp_folder_location + folder + "/" + sketch_report["name"] + ".ino.hex")
+                # print the contents of the folder
+                self.verbose_print(os.listdir(arduino_temp_folder_location + folder))
             
 
     def install_arduino_cli(self):
