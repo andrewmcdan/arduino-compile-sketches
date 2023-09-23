@@ -279,15 +279,12 @@ class CompileSketches:
             # get a list of directories in the temp folder
             temp_folder_contents = os.listdir(arduino_temp_folder_location)
             for folder in temp_folder_contents:
-                self.verbose_print("::warning::Folder:", folder)
-                self.verbose_print("::warning::hex file: " + arduino_temp_folder_location + folder + "/" + sketch_report["name"] + ".ino.hex")
+                # self.verbose_print("::warning::Folder:", folder)
+                # self.verbose_print("::warning::hex file: " + arduino_temp_folder_location + folder + "/" + sketch_report["name"] + ".ino.hex")
                 hex_file_name = arduino_temp_folder_location + folder + "/" + sketch_report["name"] + ".ino.hex"
                 # copy the hex file to the sketches report path
                 sketches_report_path = absolute_path(path=self.sketches_report_path)
                 shutil.copy(hex_file_name, sketches_report_path)
-
-                #shutil.copy(hex_file_name, os.environ["GITHUB_WORKSPACE"])
-                os.listdir(sketches_report_path)
             
 
     def install_arduino_cli(self):

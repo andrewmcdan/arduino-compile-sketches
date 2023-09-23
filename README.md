@@ -1,6 +1,6 @@
 ## This is my fork of Arduino's compile sketches action.
 
-I mostly just wanted to experiment with GitHub actions, but also I wanted to make some customizations to this one. The main thing I changed was making it compatible with Teensy's memory usage report. 
+I mostly just wanted to experiment with GitHub actions, but also I wanted to make some customizations to this one. The main thing I changed was making it compatible with Teensy's memory usage report. It also makes the .hex file that results from compilation available to download in an artifact file. 
 
 Below this point, this is just a copy of the original ReadMe.
 
