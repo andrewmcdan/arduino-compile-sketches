@@ -21,6 +21,8 @@ import tempfile
 import urllib
 import urllib.request
 
+import inspect
+
 import git
 import gitdb.exc
 import github
@@ -1113,7 +1115,7 @@ class CompileSketches:
                         memory_type=memory_type,
                         size_data_type=self.ReportKeys.code,
                     )
-                    self.verbose_print('::warning::Test warning 2: ' + str(size_data))
+                    #self.verbose_print("::warning::@" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + ": " + str(size_data))
                     if size_data:
                         size[self.ReportKeys.code] = size_data
 
@@ -1205,7 +1207,7 @@ class CompileSketches:
 
                         size[self.ReportKeys.free_for_malloc_new] = size_data
             sizes.append(size)
-        self.verbose_print(str(sizes))
+        #self.verbose_print("::warning::@" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + ": " + str(sizes))
         return sizes
 
     def get_size_data_from_output(self, compilation_output, memory_type, size_data_type):
@@ -1319,8 +1321,8 @@ class CompileSketches:
         previous_size -- data from the compilation of the sketch at the pull request's base ref, or None if the size
                          deltas feature is not enabled
         """       
-        self.verbose_print("current_size: " + str(current_size))
-        self.verbose_print("previous_size: " + str(previous_size))
+        #self.verbose_print("::warning::@" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + ": " + "current_size: " + str(current_size))
+        #self.verbose_print("::warning::@" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + ": " + "previous_size: " + str(previous_size))
         if current_size[self.ReportKeys.name] == "flash":
             size_report = {
                 self.ReportKeys.name: current_size[self.ReportKeys.name],
@@ -1487,7 +1489,7 @@ class CompileSketches:
                 self.ReportKeys.variables: variables_delta,
                 self.ReportKeys.free_for_malloc_new: free_for_malloc_new_delta,
             }
-        self.verbose_print("size_report: " + str(size_report))
+        #self.verbose_print("size_report: " + str(size_report))
         return size_report
 
     def get_warnings_report(self, current_warnings, previous_warnings):
@@ -1567,23 +1569,29 @@ class CompileSketches:
                     for index, size_summary in enumerate(sizes_summary_report)
                     if size_summary.get(self.ReportKeys.name) == size_report[self.ReportKeys.name]
                 ]
+
                 if not size_summary_report_index_list:
                     # There is no existing entry in the summary list for this memory type, so create one
                     sizes_summary_report.append({self.ReportKeys.name: size_report[self.ReportKeys.name]})
                     size_summary_report_index = len(sizes_summary_report) - 1
                 else:
                     size_summary_report_index = size_summary_report_index_list[0]
+                
+                #self.verbose_print("::warning::size_report @" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + ": " + str(size_report))
+                #self.verbose_print("::warning::sizes_summary_report @" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + ": " + str(sizes_summary_report))
+                #self.verbose_print("::warning::size_summary_report_index_list @" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + ": " + str(size_summary_report_index_list))
+                
+                if self.ReportKeys.current not in sizes_summary_report[size_summary_report_index]:
+                    sizes_summary_report[size_summary_report_index][self.ReportKeys.current] = size_report[self.ReportKeys.current]
+                if self.ReportKeys.previous not in sizes_summary_report[size_summary_report_index]:
+                    sizes_summary_report[size_summary_report_index][self.ReportKeys.previous] = size_report[self.ReportKeys.previous]
+                if self.ReportKeys.delta not in sizes_summary_report[size_summary_report_index]:
+                    sizes_summary_report[size_summary_report_index][self.ReportKeys.delta] = size_report[self.ReportKeys.delta]
 
-                if (
-                    self.ReportKeys.maximum not in sizes_summary_report[size_summary_report_index]
-                    or sizes_summary_report[size_summary_report_index][self.ReportKeys.maximum]
-                    == self.not_applicable_indicator
-                ):
-                    sizes_summary_report[size_summary_report_index][self.ReportKeys.maximum] = size_report[
-                        self.ReportKeys.maximum
-                    ]
+                #self.verbose_print("::warning::sizes_summary_report @" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + ": " + str(sizes_summary_report))
 
-                if self.ReportKeys.delta in size_report:
+                ### this section is not needed for Teensy Compiler output since deltas are embedded in each section anyways ###
+                '''if self.ReportKeys.delta in size_report:
                     if (
                         self.ReportKeys.delta not in sizes_summary_report[size_summary_report_index]
                         or sizes_summary_report[size_summary_report_index][self.ReportKeys.delta][
@@ -1628,8 +1636,37 @@ class CompileSketches:
 
                             sizes_summary_report[size_summary_report_index][self.ReportKeys.delta][
                                 self.ReportKeys.relative
-                            ][self.ReportKeys.maximum] = size_report[self.ReportKeys.delta][self.ReportKeys.relative]
-
+                            ][self.ReportKeys.maximum] = size_report[self.ReportKeys.delta][self.ReportKeys.relative]'''
+        
+        
+        '''
+        The following "warnings" generate build annotations in the GitHub UI. 
+        They output the memory usage data to the log as warnings which in turn generate build annotation in the GitHub UI.
+        '''
+        memoryUsageReport = "   Flash: code - "
+        memoryUsageReport += str(sizes_summary_report[0][self.ReportKeys.current][self.ReportKeys.code])
+        memoryUsageReport += ", data - "
+        memoryUsageReport += str(sizes_summary_report[0][self.ReportKeys.current][self.ReportKeys.data])
+        memoryUsageReport += ", headers - "
+        memoryUsageReport += str(sizes_summary_report[0][self.ReportKeys.current][self.ReportKeys.headers])
+        memoryUsageReport += ", free for files - "
+        memoryUsageReport += str(sizes_summary_report[0][self.ReportKeys.current][self.ReportKeys.free_for_files])
+        self.verbose_print("::warning::@" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + memoryUsageReport)
+        memoryUsageReport = "   RAM1: variables - "
+        memoryUsageReport += str(sizes_summary_report[1][self.ReportKeys.current][self.ReportKeys.variables])
+        memoryUsageReport += ", code - "
+        memoryUsageReport += str(sizes_summary_report[1][self.ReportKeys.current][self.ReportKeys.code])
+        memoryUsageReport += ", padding - "
+        memoryUsageReport += str(sizes_summary_report[1][self.ReportKeys.current][self.ReportKeys.padding])
+        memoryUsageReport += ", free for local variables - "
+        memoryUsageReport += str(sizes_summary_report[1][self.ReportKeys.current][self.ReportKeys.free_for_local_variables])
+        self.verbose_print("::warning::@" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + memoryUsageReport)
+        memoryUsageReport = "   RAM2: variables - "
+        memoryUsageReport += str(sizes_summary_report[2][self.ReportKeys.current][self.ReportKeys.variables])
+        memoryUsageReport += ", free for malloc/new - "
+        memoryUsageReport += str(sizes_summary_report[2][self.ReportKeys.current][self.ReportKeys.free_for_malloc_new])
+        self.verbose_print("::warning::@" + str(inspect.getframeinfo(inspect.currentframe()).lineno) + memoryUsageReport)
+        
         return sizes_summary_report
 
     def get_warnings_summary_report(self, sketch_report_list):

@@ -1,6 +1,8 @@
-## This is my fork of Arduino's compile action.
+## This is my fork of Arduino's compile sketches action.
 
-I mostly just wanted to experiment with GitHub actions, but also I wanted to make some customizations to this one. Once I get time to really do some work on this repo, I'll update this README.
+I mostly just wanted to experiment with GitHub actions, but also I wanted to make some customizations to this one. The main thing I changed was making it compatible with Teensy's memory usage report. 
+
+Below this point, this is just a copy of the original ReadMe.
 
 # `arduino/compile-sketches` action
 
